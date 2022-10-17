@@ -81,7 +81,7 @@ class Responce
      */
     public function send($data)
     {
-        $this->dataResponce = $data;
+        $this->setDataResponce($data);
         if (is_array($data))
             $this->setContentType('json');
 
@@ -89,8 +89,13 @@ class Responce
             $this->withJson();
         else
             $this->withText();
-        $this->dataResponce = null;
+        $this->setDataResponce(null);
         return $this;
+    }
+
+    public function setDataResponce($data)
+    {
+        $this->dataResponce = $data;
     }
 
     public function withText($data = null)

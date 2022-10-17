@@ -10,6 +10,7 @@ try {
     $routes = require_once AppDirectory . '/routes.php';
 
     $app = new System\App($config, $routes);
+    
 } catch (Exception $e) {
 
     $responce = new System\Responce();

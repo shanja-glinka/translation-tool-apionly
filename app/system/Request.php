@@ -5,6 +5,7 @@ namespace System;
 class Request
 {
 
+    protected $isHttps;
     protected $requestUrl;
     protected $requestMethod;
     protected $get;
@@ -16,6 +17,7 @@ class Request
         $this->requestUrl = $this->getRequestUrl();
         $this->get = $this->requestVluesPrepare($_GET);
         $this->post = $this->requestVluesPrepare($_POST);
+        $this->isHttps = $this->isHttps();
     }
 
     public function getBody($var = null)
@@ -44,6 +46,11 @@ class Request
         return false;
     }
 
+    public function isHttps() 
+    {
+        return $_SERVER['HTTPS'];
+    }
+
     public function dump()
     {
         return ['requestUrl' => $this->requestUrl, 'requestMethod' => $this->requestMethod, 'get' => $this->get, 'post' => $this->post];
@@ -67,6 +74,11 @@ class Request
             $requestUrl = substr($requestUrl, 0, strpos($requestUrl, '?'));
         }
         return $requestUrl;
+    }
+
+    public function getRequestUri() 
+    {
+        return $_SERVER['REQUEST_URI'];
     }
 
     public function getDomainName()

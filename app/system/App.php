@@ -57,8 +57,8 @@ final class App
     private function applyConfig()
     {
         if ($this->getConfig('https_only')) {
-            if (!$_SERVER['HTTPS'])
-                $this->responce->redirectTo('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            if (!$this->request->isHttps())
+                $this->responce->redirectTo('https://' . $this->request->getDomainName(). $this->request->getRequestUri());
         }
     }
 
