@@ -2,7 +2,6 @@
 
 namespace Controllers;
 
-use Exception;
 
 class Translate extends \System\Controllers
 {
@@ -25,6 +24,13 @@ class Translate extends \System\Controllers
     {
         $this->responce->setContentType('json');
         return $this->responce->send('POST Hello API world');
+    }
+
+    public function Index()
+    {
+        $this->responce->setContentType('json');
+
+        return $this->setView('Translate')->renderView('Index');
     }
 
 }

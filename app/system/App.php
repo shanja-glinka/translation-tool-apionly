@@ -13,7 +13,6 @@ final class App
 
     public function __construct($config, $routes)
     {
-        // session_start();
         $this->autoloadInit();
         
         $this->config = $config;
@@ -25,8 +24,6 @@ final class App
 
         $this->setConfig($config);
         $this->setRoutes($routes);
-
-        $this->applyConfig();
     }
 
     public function getConfig($variable = null)
@@ -42,15 +39,14 @@ final class App
         $this->router->add($routes);
         if ($this->router->isFound())
             $this->router->executeHandler($this->router->getRequestHandler(), $this->router->getParams());
-        else {
-            $this->responce->setHtmlCode(404);
-            $this->responce->send('Page not found');
-        }
+        else
+            $this->responce->setHtmlCode(404)->send('Page not found');
     }
 
     protected function setConfig($config)
     {
         $this->config = $config;
+        $this->applyConfig();
     }
 
 

@@ -11,7 +11,7 @@ final class Translates {
     public function __construct()
     {
         $this->translationsDir = AppDirectory . '/data/tranlations';
-        $this->translationsList = null;
+        $this->translationsList = array();
         $this->translationFileName = '.translate.json';
     }
 
@@ -31,8 +31,8 @@ final class Translates {
     public function loadTranslationsList()
     {
 
-        if (is_array($this->translationsList))
-            return $this->translationsList;
+        // if (is_array($this->translationsList))
+        //     return $this->translationsList;
 
         $this->translationsList = array();
 

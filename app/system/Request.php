@@ -109,18 +109,8 @@ class Request
         $headers = $param['headers'] ? $param['headers'] : array();
         $returnResponce = $param['returnResponce'] ? $param['returnResponce'] : true;
 
-        $postvars = '';
-
         if (strtolower($method) == "post" && !$headers['Content-type']) {
             $headers['Content-type'] = 'application/x-www-form-urlencoded';
-        }
-
-        if (count($requestValue) > 0) {
-            $sep = '';
-            foreach ($requestValue as $key => $value) {
-                $postvars .= $sep . urlencode($key) . '=' . urlencode($value);
-                $sep = '&';
-            }
         }
 
         if (!$curl) {
@@ -155,7 +145,7 @@ class Request
             curl_setopt($ch, CURLOPT_URL, $host);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($requestValue));
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headersvars);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -170,9 +160,9 @@ class Request
 
     private function requestVluesPrepare($s)
     {
-        if (!is_null($s)) {
-            StringHelper::strTrim(StringHelper::htmlChars($s));
-        }
+        if (!is_null($s))
+            Helper\StringHelper::strTrim(Helper\StringHelper::htmlChars($s));
+
         return $s;
     }
 }

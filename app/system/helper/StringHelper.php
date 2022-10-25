@@ -1,6 +1,6 @@
 <?
 
-namespace System;
+namespace System\Helper;
 
 
 class StringHelper
