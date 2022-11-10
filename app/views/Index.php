@@ -2,21 +2,19 @@
 
 namespace Views;
 
-use System\Responce;
-
 class Index extends \System\Views
 {
-    private $responce;
 
     public function __construct()
     {
-        $this->responce = new Responce('json');
-        parent::__construct($this->responce);
+        $responce = new \System\Responce('json');
+        parent::__construct($responce);
 
     }
 
-    public function HelpView()
+    public function HelpView($args)
     {
-
+        // \System\Helper\Debug::varDump($args);
+        return $this->responce->withJson($args);
     }
 }

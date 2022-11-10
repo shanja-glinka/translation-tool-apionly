@@ -19,8 +19,10 @@ class Index extends \System\Controllers
 
     public function HelpRouting()
     {
-        $this->setView('Index')->renderView('HelpView', $route);
-        return $this->responce->withJson('Hello API world');
+        // $modelHelpRouting = new \Models\HelpRouting();
+        $modelHelpRouting = $this->callModel('HelpRouting');
+        return $this->setView('Index')->renderView('HelpView', array($modelHelpRouting(1)));
+        
     }
 
 }

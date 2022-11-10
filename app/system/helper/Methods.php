@@ -2,7 +2,6 @@
 
 namespace System\Helper;
 
-use Exception;
 
 class Methods
 {
@@ -12,7 +11,7 @@ class Methods
             throw new \RuntimeException("Class '{$methodName}' not found", 500);
 
         if (is_array($args) and count($args) == 0)
-            return new $methodName();
+            return new $methodName;
 
         if (!is_array($args))
             $args = array($args);
@@ -22,7 +21,6 @@ class Methods
         $constructor = $ref->getConstructor();
         $constructor->setAccessible(true);
         $constructor->invokeArgs($instance, $args);
-
         return $instance;
     }
 
@@ -36,4 +34,5 @@ class Methods
 
         return call_user_func_array(array($method, $methodName), $args);
     }
+
 }

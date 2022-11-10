@@ -3,18 +3,17 @@
 return [
     '/' => 'Controllers\Index@Home',
 
-    '/info'  => [
-        'GET' => 'Controllers\Index@info',
-    ],
+    '/info' => 'Controllers\Index@info',
+    '/help/routing' => 'Controllers\Index@HelpRouting',
 
-    
-    '/translations'  => [
+
+    '/translations' => [
         'GET' => 'Controllers\Translate@getTranslationsList',
     ],
-    '/translations/languages'  => [
+    '/translations/languages' => [
         'GET' => 'Controllers\Translate@info',
     ],
-    '/translations/language/:any'  => [
+    '/translations/language/:any' => [
         'GET' => 'Controllers\Translate@translation',
     ],
 

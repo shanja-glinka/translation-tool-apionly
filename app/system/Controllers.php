@@ -25,10 +25,11 @@ abstract class Controllers
 
 
 
-    protected function setView($viewMethodName)
+    protected function setView($viewMethodName, $args = array())
     {
-        $this->view = Helper\Methods::installMethod($this->view, $viewMethodName);
-        
+        $this->installMethodNamespace($viewMethodName, 'Views\\');
+        $this->view = Helper\Methods::installMethod($viewMethodName, $args);
+
         return $this;
     }
 
@@ -39,6 +40,18 @@ abstract class Controllers
                 'Controller View was not installed'
             );
 
-        Helper\Methods::callMethod($this->view, $action, $params);
+        return Helper\Methods::callMethod($this->view, $action, $params);
+    }
+
+    protected function callModel($modelMethodName, $args = array())
+    {
+        $this->installMethodNamespace($modelMethodName, 'Models\\');
+        return Helper\Methods::installMethod($modelMethodName, $args);
+    }
+
+    private function installMethodNamespace(&$methodName, $namespace)
+    {
+        if (strpos($methodName, $namespace) === false)
+            $methodName = $namespace . $methodName;
     }
 }

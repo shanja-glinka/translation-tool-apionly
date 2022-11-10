@@ -11,7 +11,7 @@ final class App
     protected static $responce;
     protected static $request;
 
-    public function __construct($config, $routes)
+    public function __construct($config)
     {
         $this->autoloadInit();
         
@@ -20,9 +20,12 @@ final class App
         $this->router = new Router();
         $this->request = new Request();
         $this->responce = new Responce();
+        
+        $this->setConfig($this->config);
+    }
 
-
-        $this->setConfig($config);
+    public function __invoke($routes)
+    {
         $this->setRoutes($routes);
     }
 
