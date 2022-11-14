@@ -3,14 +3,14 @@ Tool for creating translation dictionaries _API only_
 
 ## Usage
 
-Help routing:
+Help routing Request:
 ```
-Request: https://../help/routing
+https://../help/routing
 ```
 
 Response:
 ```json
-Response: {
+{
     "ok": 200,
     "result": {
         "/": "*",
