@@ -49,6 +49,11 @@ abstract class Controllers
         return Helper\Methods::installMethod($modelMethodName, $args);
     }
 
+    protected function callModelMethod($model, $modelMethodName, $args = array())
+    {
+        return Helper\Methods::callMethod($model, $modelMethodName, $args);
+    }
+
     private function installMethodNamespace(&$methodName, $namespace)
     {
         if (strpos($methodName, $namespace) === false)

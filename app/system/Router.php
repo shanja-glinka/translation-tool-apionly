@@ -27,6 +27,11 @@ final class Router
         $this->requestUrl = $requestUrl;
     }
 
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
+
     public function getRequestMethod()
     {
         if (isset($this->requestMethod))

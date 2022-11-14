@@ -86,9 +86,9 @@ class Responce
             $this->setContentType('json');
 
         if ($this->contentTypeResponce == 'json')
-            $this->withJson();
+            $this->withJson($data);
         else
-            $this->withText();
+            $this->withText($data);
         $this->setDataResponce(null);
         return $this;
     }
