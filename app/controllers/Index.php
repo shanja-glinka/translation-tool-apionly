@@ -29,7 +29,7 @@ class Index extends \System\Controllers
                 break;
         }
 
-        $modelHelp = $this->callModel('HelpSwitch');
+        $modelHelp = $this->callModel('Models\Help\HelpSwitch');
         $callResult = $this->callModelMethod($modelHelp, $modelCallResult);
         return $this->setView('Index')->renderView('HelpSwitch', array($callResult, $helpModule));
     }
@@ -37,7 +37,7 @@ class Index extends \System\Controllers
     public function HelpRouting()
     {
         // $modelHelpRouting = new \Models\HelpRouting();
-        $modelHelpRouting = $this->callModel('HelpRouting');
+        $modelHelpRouting = $this->callModel('Help\HelpRouting');
         return $this->setView('Index')->renderView('HelpView', array($modelHelpRouting(1)));
     }
 }

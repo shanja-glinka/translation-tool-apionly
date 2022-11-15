@@ -7,6 +7,22 @@ return [
     '/help/routing' => 'Controllers\Index@HelpRouting',
     '/help/:any' => 'Controllers\Index@HelpSwitch',
 
+    '/install' => [
+        'POST' => 'Controllers\Install@MVC',
+    ],
+    '/install/controller' => [
+        'POST' => 'Controllers\Install@Controller',
+        'DELETE' => 'Controllers\Install@Controller'
+    ],
+    '/install/model' => [
+        'POST' => 'Controllers\Install@Model',
+        'DELETE' => 'Controllers\Install@Model'
+    ],
+    '/install/view' => [
+        'POST' => 'Controllers\Install@View',
+        'DELETE' => 'Controllers\Install@View'
+    ],
+
 
     '/translations' => [
         'GET' => 'Controllers\Translate@getTranslationsList',

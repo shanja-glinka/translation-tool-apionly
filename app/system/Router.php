@@ -130,7 +130,7 @@ final class Router
         $requestHandler = @$requestHandler[$request->getRequestMethod()];
 
         if (!$requestHandler)
-            throw new \InvalidArgumentException('Method "' . $request->getRequestMethod() . '" not accepted', 406);
+            throw new \InvalidArgumentException('Method "' . $request->getRequestMethod() . '" not accepted', 405);
 
         return $requestHandler;
     }

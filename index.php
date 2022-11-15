@@ -3,8 +3,8 @@
 
 define('AppDirectory', str_replace('\\', '/', __DIR__) . '/app');
 
-@include_once('error_output.php');
-@include_once('tests_works.php');
+// @include_once('error_output.php');
+// @include_once('tests_works.php');
 
 try {
     require_once AppDirectory . '/system/App.php';

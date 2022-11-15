@@ -2,6 +2,8 @@
 
 namespace System;
 
+use Exception;
+
 class Request
 {
 
@@ -46,7 +48,7 @@ class Request
         return false;
     }
 
-    public function isHttps() 
+    public function isHttps()
     {
         return $_SERVER['HTTPS'];
     }
@@ -76,7 +78,7 @@ class Request
         return $requestUrl;
     }
 
-    public function getRequestUri() 
+    public function getRequestUri()
     {
         return $_SERVER['REQUEST_URI'];
     }
@@ -90,6 +92,77 @@ class Request
     {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         return $protocol;
+    }
+
+    /**
+     * Request Value
+     * 
+     * @param string $valueName or NULL for get request datas
+     * @param string $requestMethod or NULL for call $this->getRequestMethod()
+     * 
+     * @return any
+     */
+    public function val($valueName = null, $requestMethod = null)
+    {
+        if ($requestMethod === null)
+            $requestMethod = $this->getRequestMethod();
+
+        $request = null;
+        switch ($requestMethod) {
+            case 'GET':
+                $request = &$_GET;
+                break;
+            case 'POST':
+                $request = &$_POST;
+                break;
+            case 'DELETE':
+            case 'PUT':
+            case 'OPTIONS':
+            case 'HEAD':
+                $request = &$_REQUEST;
+                break;
+            default:
+                $request = null;
+                break;
+        }
+
+        return ($request == null ? null : ($valueName == null ? $request : $request[$valueName]));
+    }
+
+    /**
+     * @param string $valueName
+     */
+    public function throwIfValueNotExist($valueName, $requestMethod = null)
+    {
+        if (is_array($valueName))
+            return $this->throwIfValuesNotExist($valueName, $requestMethod);
+
+        if ($requestMethod === null)
+            $requestMethod = $this->getRequestMethod();
+
+        if ($this->val($valueName, $requestMethod) === null)
+            throw new Exception("'$valueName' variable required", 400);
+
+        return true;
+    }
+
+
+    /**
+     * @param array $valueName
+     */
+    public function throwIfValuesNotExist($valueName, $requestMethod = null)
+    {
+        if (!is_array($valueName))
+            throw new Exception("The variable $valueName must be an array", 500);
+
+        if ($requestMethod === null)
+            $requestMethod = $this->getRequestMethod();
+
+        foreach($valueName as $value)
+            if ($this->val($value, $requestMethod) === null)
+                throw new Exception("'$valueName' variable required", 400);
+            
+        return true;
     }
 
     /**

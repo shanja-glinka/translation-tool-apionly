@@ -1,6 +1,6 @@
 <?
 
-namespace Models;
+namespace Models\Help;
 
 final class HelpSwitch
 {
@@ -12,12 +12,12 @@ final class HelpSwitch
 
     public function Any()
     {
-        return 'text';
+        return 'Help/AnyQuestions';
     }
 
     public function Translate()
     {
-        return 'Text Example';
+        return 'Help/TranslateQuestion';
     }
 
 

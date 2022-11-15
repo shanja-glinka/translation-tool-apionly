@@ -1,6 +1,6 @@
 <?
 
-namespace Models;
+namespace Models\Help;
 
 final class HelpRouting
 {

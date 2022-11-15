@@ -1,5 +1,29 @@
 <?
 
+// ------------------------ Test isset forks for &links
+
+global $issetExample;
+$issetExample = array(true);
+function issetExampleWork0()
+{
+    return 'itString';
+}
+
+
+function issetExampleWork1()
+{
+    global $issetExample;
+    $linkVar = &$issetExample[0];
+    return $linkVar;
+}
+$varisset0 = issetExampleWork0();
+$varisset1 = issetExampleWork1();
+echo PHP_EOL . '------------------------' . PHP_EOL . PHP_EOL;
+var_dump(isset($varisset0), isset($varisset1));
+exit;
+
+
+// ------------------------ Test invoker for __construct func
 abstract class TestClassAbs {
     private $property;
     private $property2;
