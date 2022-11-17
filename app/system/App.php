@@ -18,7 +18,7 @@ final class App
         $this->config = $config;
         $this->session = new Session();
         $this->router = new Router();
-        $this->request = new Request();
+        $this->request = new Request($this->config);
         $this->responce = new Responce();
         
         $this->setConfig($this->config);
@@ -59,6 +59,9 @@ final class App
             if (!$this->request->isHttps())
                 $this->responce->redirectTo('https://' . $this->request->getDomainName(). $this->request->getRequestUri());
         }
+
+        if (!$this->request->isMethodAcepted($this->request->getRequestMethod()))
+            throw new \InvalidArgumentException('Method "' . $this->request->getRequestMethod() . '" not accepted', 405);
     }
 
     private function autoloadInit()

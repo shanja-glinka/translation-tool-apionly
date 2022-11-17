@@ -10,7 +10,7 @@ final class HelpRouting
 
     public function __construct()
     {
-        $this->routes = require AppDirectory . '/routes.php';
+        $this->routes = require AssetsDirectory . '/data/routes.php';
     }
 
     public function __invoke($e)

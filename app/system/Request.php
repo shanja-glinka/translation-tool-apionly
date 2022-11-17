@@ -7,19 +7,26 @@ use Exception;
 class Request
 {
 
+    protected $config;
     protected $isHttps;
     protected $requestUrl;
     protected $requestMethod;
     protected $get;
     protected $post;
+    protected $acceptMethods;
 
-    public function __construct()
+    public function __construct($config = null)
     {
-        $this->requestMethod = $this->getRequestMethod();
+        $this->config = ($config === null ? new \System\Config : $config);
+
+        $this->isHttps = $this->isHttps();
         $this->requestUrl = $this->getRequestUrl();
+        $this->requestMethod = $this->getRequestMethod();
         $this->get = $this->requestVluesPrepare($_GET);
         $this->post = $this->requestVluesPrepare($_POST);
-        $this->isHttps = $this->isHttps();
+        $this->acceptMethods = $this->config['acceptMethods'];
+
+        $this->parseRequests();
     }
 
     public function getBody($var = null)
@@ -53,6 +60,11 @@ class Request
         return $_SERVER['HTTPS'];
     }
 
+    public function isMethodAcepted($method)
+    {
+        return in_array($method, $this->acceptMethods);
+    }
+
     public function dump()
     {
         return ['requestUrl' => $this->requestUrl, 'requestMethod' => $this->requestMethod, 'get' => $this->get, 'post' => $this->post];
@@ -68,13 +80,13 @@ class Request
 
     public function getRequestUrl()
     {
-        if (isset($this->requestUrl)) {
+        if (isset($this->requestUrl))
             return $this->requestUrl;
-        }
+
         $requestUrl = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
-        if (strpos($requestUrl, '?')) {
+        if (strpos($requestUrl, '?'))
             $requestUrl = substr($requestUrl, 0, strpos($requestUrl, '?'));
-        }
+
         return $requestUrl;
     }
 
@@ -150,18 +162,18 @@ class Request
     /**
      * @param array $valueName
      */
-    public function throwIfValuesNotExist($valueName, $requestMethod = null)
+    public function throwIfValuesNotExist($valuesName, $requestMethod = null)
     {
-        if (!is_array($valueName))
-            throw new Exception("The variable $valueName must be an array", 500);
+        if (!is_array($valuesName))
+            throw new Exception("The variable $valuesName must be an array", 500);
 
         if ($requestMethod === null)
             $requestMethod = $this->getRequestMethod();
 
-        foreach($valueName as $value)
+        foreach ($valuesName as $value)
             if ($this->val($value, $requestMethod) === null)
-                throw new Exception("'$valueName' variable required", 400);
-            
+                throw new Exception("'$value' variable required", 400);
+
         return true;
     }
 
@@ -237,5 +249,17 @@ class Request
             Helper\StringHelper::strTrim(Helper\StringHelper::htmlChars($s));
 
         return $s;
+    }
+
+    private function parseRequests()
+    {
+        parse_str(file_get_contents("php://input"), $request);
+        foreach ($request as $key => $value) {
+            unset($request[$key]);
+
+            $request[str_replace('amp;', '', $key)] = $value;
+        }
+
+        $_REQUEST = array_merge($_REQUEST, $this->requestVluesPrepare($request));
     }
 }

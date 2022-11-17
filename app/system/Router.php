@@ -2,6 +2,8 @@
 
 namespace System;
 
+use Exception;
+
 final class Router
 {
 
@@ -17,39 +19,19 @@ final class Router
         ':rest' => '(\bget\b|\bpost\b|\bdelete\b|\bput\b)',
         ':token' => '([0-9]{4,30}[-]{1}[-0-9a-z]{4,32}[-]{1}[-0-9a-z]{3,20})'
     ];
+    private $request;
 
     public function __construct()
     {
-        $requestMethod = $this->getRequestMethod();
-        $requestUrl = $this->getRequestUrl();
-        
-        $this->requestMethod = $requestMethod;
-        $this->requestUrl = $requestUrl;
+        $this->request = new \System\Request();
+
+        $this->requestMethod = $this->request->getRequestMethod();
+        $this->requestUrl = $this->request->getRequestUrl();
     }
 
     public function getRoutes()
     {
         return $this->routes;
-    }
-
-    public function getRequestMethod()
-    {
-        if (isset($this->requestMethod))
-            return $this->requestMethod;
-
-        return filter_var(getenv('REQUEST_METHOD'));
-    }
-
-    public function getRequestUrl()
-    {
-        if (isset($this->requestUrl))
-            return $this->requestUrl;
-
-        $requestUrl = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
-        if (strpos($requestUrl, '?'))
-            $requestUrl = substr($requestUrl, 0, strpos($requestUrl, '?'));
-
-        return $requestUrl;
     }
 
     public function getRequestHandler()
@@ -64,16 +46,56 @@ final class Router
 
     public function add($route, $handler = null)
     {
-        if ($handler !== null && !is_array($route))
+        if ($handler !== null and !is_array($route)) {
+            if (is_array($handler)) {
+                foreach ($handler as $requestMethod => $methodCall) {
+                    if (!$this->request->isMethodAcepted($requestMethod))
+                        throw new \InvalidArgumentException("Method '$requestMethod' not accepted", 405);
+
+                    $this->isHandlerExist($methodCall);
+                }
+            } else
+                $this->isHandlerExist($handler);
+
+
+            if (isset($this->routes[$route]) and (!is_array($this->routes[$route]) or (is_array($this->routes[$route]) and is_string($handler))))
+                throw new Exception("Route '$route' already exist", 400);
+
+            if (is_array($this->routes[$route]) and is_array($handler))
+                foreach ($handler as $requestMethod => $methodCall)
+                    if (isset($this->routes[$route][$requestMethod]))
+                        throw new Exception("Route '$route' with '$handler' method already exist", 400);
+
             $route = array($route => $handler);
+        }
 
         $this->routes = array_merge($this->routes, $route);
         return $this;
     }
 
+    public function del($route, $handler = null)
+    {
+        if (!$this->routes[$route])
+            return $this;
+
+        if ($handler === null or !is_array($handler)) {
+            unset($this->routes[$route]);
+            return $this;
+        }
+
+        foreach ($handler as $requestMethod)
+            if (isset($this->routes[$route][$requestMethod]))
+                unset($this->routes[$route][$requestMethod]);
+
+        if (isset($this->routes[$route]) and is_array($this->routes[$route]) and !count($this->routes[$route]))
+            unset($this->routes[$route]);
+
+        return $this;
+    }
+
     public function isFound()
     {
-        $requestUrl = $this->getRequestUrl();
+        $requestUrl = $this->request->getRequestUrl();
         if (isset($this->routes[$requestUrl])) {
             $this->requestHandler = $this->routes[$requestUrl];
             return true;
@@ -111,7 +133,7 @@ final class Router
             return call_user_func_array($handler, $params);
 
         if (strpos($handler, '@')) {
-            $restAction = explode('@', $handler);
+            $restAction = $this->explodeHandler($handler);
             $method = $restAction[0];
             $action = $restAction[1];
 
@@ -119,8 +141,6 @@ final class Router
             return Helper\Methods::callMethod($method, $action, $params);
         }
     }
-
-
 
     private function restMethodCheck($requestHandler)
     {
@@ -133,5 +153,28 @@ final class Router
             throw new \InvalidArgumentException('Method "' . $request->getRequestMethod() . '" not accepted', 405);
 
         return $requestHandler;
+    }
+
+    private function isHandlerExist($handler)
+    {
+        $restAction = $this->explodeHandler($handler);
+        $method = $restAction[0];
+        $action = $restAction[1];
+
+        if (!class_exists($method))
+            throw new \RuntimeException("Class '{$method}' not found", 500);
+
+        if (!method_exists($method, $action))
+            throw new \RuntimeException("Method '{$method}::{$action}' not found", 500);
+    }
+
+    private function explodeHandler($handler)
+    {
+        $restAction = @explode('@', $handler);
+
+        if (!is_array($restAction) or count($restAction) < 2)
+            throw new \RuntimeException("Route handler cannot be processed", 500);
+
+        return $restAction;
     }
 }

@@ -22,6 +22,10 @@ return [
         'POST' => 'Controllers\Install@View',
         'DELETE' => 'Controllers\Install@View'
     ],
+    '/install/route' => [
+        'PUT' => 'Controllers\Install@Route',
+        'DELETE' => 'Controllers\Install@Route'
+    ],
 
 
     '/translations' => [

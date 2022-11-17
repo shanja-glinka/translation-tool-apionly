@@ -54,9 +54,30 @@ abstract class Controllers
         return Helper\Methods::callMethod($model, $modelMethodName, $args);
     }
 
+    protected function requestMethodToOperName($methodCallName)
+    {
+        return $this->getOperNameByRequestMethod() . $methodCallName;
+    }
+
+    protected function getOperNameByRequestMethod()
+    {
+        $methodName = null;
+        if ($this->request->getRequestMethod() == 'GET')
+            $methodName = 'get';
+        elseif ($this->request->getRequestMethod() == 'POST')
+            $methodName = 'create';
+        elseif ($this->request->getRequestMethod() == 'DELETE')
+            $methodName = 'delete';
+        elseif ($this->request->getRequestMethod() == 'PUT')
+            $methodName = 'update';
+
+        return $methodName;
+    }
+
     private function installMethodNamespace(&$methodName, $namespace)
     {
         if (strpos($methodName, $namespace) === false)
             $methodName = $namespace . $methodName;
     }
+    
 }

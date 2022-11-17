@@ -5,5 +5,6 @@ return array(
     'info' => array(
         'version' => '0.0.1'
     ),
-    'contentType' => 'json'
+    'contentType' => 'json',
+    'acceptMethods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 );

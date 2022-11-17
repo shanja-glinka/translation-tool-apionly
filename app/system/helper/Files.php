@@ -23,4 +23,13 @@ class Files
             return (is_writable($dir));
         }
     }
+
+    public static function fileRewrite($filePath, $content)
+    {
+        $fp = fopen($filePath, 'w+');
+        fwrite($fp, $content);
+        fclose($fp);
+        chmod($filePath, 0777);
+        clearstatcache();
+    }
 }

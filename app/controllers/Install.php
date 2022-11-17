@@ -23,7 +23,7 @@ class Install extends \System\Controllers
     public function Controller()
     {
         $this->request->throwIfValueNotExist('controllerName');
-        
+
         $methodName = $this->requestMethodToOperName('Controller');
         $callResult = $this->makeCallModelMethod('Install', $methodName, array($this->request->val('controllerName')));
 
@@ -46,34 +46,23 @@ class Install extends \System\Controllers
 
         $methodName = $this->requestMethodToOperName('View');
         $callResult = $this->makeCallModelMethod('Install', $methodName, array($this->request->val('viewName')));
-        
+
         return $this->setView('Install')->renderView('OneViewMVC', array($this->request->getRequestMethod(), $callResult));
     }
 
     public function Route()
     {
+        $args = array('route', 'call');
+
+        $this->request->throwIfValuesNotExist($args);
+
+        foreach ($args as &$v)
+            $v = $this->request->val($v);
+
         $methodName = $this->requestMethodToOperName('Route');
-        $args = array(
-            $this->request->val('route'),
-            $this->request->val('callFunctions'),
-            $this->request->val('requests')
-        );
-
         $callResult = $this->makeCallModelMethod('Install', $methodName, $args);
-        return $this->setView('Install')->renderView('Route', array($callResult));
-    }
 
-
-    private function requestMethodToOperName($methodCallName)
-    {
-        $methodName = null;
-
-        if ($this->request->getRequestMethod() == 'POST')
-            $methodName = 'create' . $methodCallName;
-        else if ($this->request->getRequestMethod() == 'DELETE')
-            $methodName = 'delete' . $methodCallName;
-
-        return $methodName;
+        return $this->setView('Install')->renderView('Route', array($this->request->getRequestMethod(), $callResult));
     }
 
     private function makeCallModelMethod($modelName, $methodName, $args = array())

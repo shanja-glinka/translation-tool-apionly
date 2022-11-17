@@ -69,7 +69,42 @@ class Install extends \System\Views
             elseif ($arg === true)
                 $arg = 'OK';
             elseif (is_string($arg))
-                $arg = $arg;
+                $arg = 'OK. Moved to: ' . $arg;
+            else
+                $arg = 'unknown';
+        }
+        return $this->responce->withJson($arg);
+    }
+
+    public function Route($method, $arg)
+    {
+        if ($method == 'PUT') {
+            if ($arg === 2)
+                $arg = 'file exists and cannot be overwritten';
+            elseif ($arg === -1)
+                $arg = 'directory is not allowed to write';
+            elseif ($arg === -3)
+                $arg = 'directory is not allowed to write';
+            elseif ($arg === false)
+                $arg = 'file was not created';
+            elseif ($arg === true)
+                $arg = 'OK';
+            else
+                $arg = 'unknown';
+        }
+        if ($method == 'DELETE') {
+            if ($arg === 2)
+                $arg = 'file exists and cannot be overwritten';
+            elseif ($arg === -1)
+                $arg = 'directory is not allowed to write';
+            elseif ($arg === -2)
+                $arg = 'directory for deleted files is not allowed to write';
+            elseif ($arg === false)
+                $arg = 'file was not created';
+            elseif ($arg === true)
+                $arg = 'OK';
+            elseif (is_string($arg))
+                $arg = 'OK. Moved to: ' . $arg;
             else
                 $arg = 'unknown';
         }

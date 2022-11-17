@@ -55,10 +55,44 @@ final class Install
         return $this->unlinkClass($name, AppDirectory . '/views/');
     }
 
+    public function updateRoute($route, $call)
+    {
+        $dir = AssetsDirectory . '/data/';
+        $filePath = $dir . 'routes.php';
+
+
+        $routes = require $filePath;
+        $router = new \System\Router();
+
+        $router->add($routes);
+        $router->add($route, $call);
+
+        $this->updateRoutes($router->getRoutes(), $dir, 'routes.php');
+
+        return true;
+    }
+
+    public function deleteRoute($route, $call)
+    {
+        $dir = AssetsDirectory . '/data/';
+        $filePath = $dir . 'routes.php';
+
+
+        $routes = require $filePath;
+        $router = new \System\Router();
+
+        $router->add($routes);
+        $router->del($route, ($call == '*' ? null: $call));
+
+        $this->updateRoutes($router->getRoutes(), $dir, 'routes.php');
+
+        return true;
+    }
+
     private function unlinkClass($className, $dir)
     {
         clearstatcache();
-        $dirMove = 'assets/deleted/MVC/';
+        $dirMove = AssetsDirectory . '/deleted/MVC/';
         $filePath = $dir . $className . '.php';
         $filePathNew = $dirMove . \System\Helper\TimeWorker::timeToStamp() . '_' . $className . '.php';
 
@@ -82,19 +116,48 @@ final class Install
     {
         clearstatcache();
         $filePath = $dir . $className . '.php';
+
         if (file_exists($filePath))
             return 2;
 
         if (!\System\Helper\Files::isWritable_r($dir))
             return -1;
 
-        $fp = fopen($filePath, 'w+');
-        fwrite($fp, $content);
-        fclose($fp);
-        chmod($filePath, 0777);
-        clearstatcache();
+        \System\Helper\Files::fileRewrite($filePath, $content);
 
         return true;
+    }
+
+    private function updateRoutes($routes, $dir, $fileName)
+    {
+        $dir = AssetsDirectory . '/data/';
+        $filePath = $dir . $fileName;
+
+        $content = '';
+
+        if (!\System\Helper\Files::isWritable_r($dir))
+            return -1;
+
+        if (!\System\Helper\Files::isWritable_r($filePath))
+            return -3;
+
+        $_t = "    ";
+        foreach ($routes as $route => $handler) {
+            $content .= "$_t'$route' => ";
+
+            if (is_array($handler)) {
+                $content .= "[\n";
+
+                foreach ($handler as $requestMethod => $call)
+                    $content .= "$_t$_t'$requestMethod' => '$call',\n";
+                $content .= "$_t],\n";
+            } else
+                $content .= "'$handler',\n";
+        }
+
+        $content = $this->setTamplateVars($this->loadTemplate('Install_Routes.txt'), array('routes' => $content));
+        
+        \System\Helper\Files::fileRewrite($filePath, $content);
     }
 
     private function setTamplateVars($template, $vars)
@@ -106,7 +169,7 @@ final class Install
 
     private function loadTemplate($fileName)
     {
-        $fileDir = 'assets/templates/MVC/';
+        $fileDir = AssetsDirectory . '/templates/MVC/';
 
         $filePath = $fileDir . $fileName;
 
