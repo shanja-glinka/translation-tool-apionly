@@ -39,4 +39,14 @@ return [
         'GET' => 'Controllers\Translate@translation',
     ],
 
+    '/schema/builder' => [
+        'POST' => 'Controllers\Schemas@Build',
+    ],
+    '/schema/table' => [
+        'GET' => 'Controllers\Schemas@Table',
+        'PUT' => 'Controllers\Schemas@Table',
+        'POST' => 'Controllers\Schemas@Table',
+        'DELETE' => 'Controllers\Schemas@Table',
+    ]
+
 ];

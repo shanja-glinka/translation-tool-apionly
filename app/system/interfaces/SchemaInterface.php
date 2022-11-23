@@ -4,9 +4,19 @@ namespace System\Interfaces;
 
 interface SchemaInterface {
 
+    public function __set($var, $val);
+
+    public function __get($var);
+
     public function setScheme($schemaTable);
 
-    public function create($schemaTable);
+    public function load();
 
-    public function drop($schemaTable);
+    public function select();
+
+    public function update();
+
+    public function insert();
+
+    public function delete();
 }
