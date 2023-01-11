@@ -22,3 +22,14 @@ Response:
     }
 }
 ```
+
+
+
+
+
+
+
+
+
+
+The operation was interrupted. The customer did not pay for the work
