@@ -1,4 +1,4 @@
-# UI-translation-tool
+# translation-tool-apionly
 Tool for creating translation dictionaries _API only_
 
 ## Usage
@@ -32,4 +32,4 @@ Response:
 
 
 
-The operation was interrupted. The customer did not pay for the work
+The work was stopped, the product was not completed. The customer did not pay for the work
